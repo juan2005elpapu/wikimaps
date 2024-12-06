@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Simple</title>
+  <style>
+    /* Asegúrate de que el mapa ocupe un espacio visible */
+    #map {
+      height: 300px; /* Ajusta según tu necesidad */
+      width: 100%; /* Tamaño completo en ancho */
+    }
+  </style>
+</head>
+<body>
+  <h1>Mi Primer Mapa</h1>
+  <div id="map"></div>
+  <script>
+    // Función de inicialización del mapa
+    function initMap() {
+      const location = { lat: -34.397, lng: 150.644 }; // Coordenadas iniciales
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: location,
+        zoom: 8, // Nivel de acercamiento
+      });
+    }
+  </script>
+  <!-- Carga de la API con tu clave -->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABtfLcXyuDyXPgrX-tnE6bKBQqYl9z5xs&callback=initMap">
+  </script>
+</body>
+</html>
