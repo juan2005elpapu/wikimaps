@@ -10,10 +10,11 @@ def display():
     root = tk.Tk()
     root.title("Lista de Usuarios")
 
-    tree = ttk.Treeview(root, columns=("ID", "Nombre", "Contraseña"), show="headings")
+    tree = ttk.Treeview(root, columns=("ID", "Nombre", "Contraseña", "Email"), show="headings")
     tree.heading("ID", text="ID")
     tree.heading("Nombre", text="Nombre")
     tree.heading("Contraseña", text="Contraseña")
+    tree.heading("Email", text="Email")
     tree.pack(fill="both", expand=True)
 
     for user in usuarios:
