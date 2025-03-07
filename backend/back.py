@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox, ttk
 from maps.fifoQueue import FifoQueue
+from maps.mapApp import get_current_user
 class Nodo:
     def __init__(self, valor, usuario=None):
 
@@ -42,7 +43,7 @@ class Nodo:
 
 cola_comentarios = FifoQueue()
 nodo_seleccionado = None
-usuario = "variable"  
+usuario = get_current_user()
 
 def actualizar_interfaz():
     limpiar_treeview()
