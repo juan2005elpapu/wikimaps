@@ -14,9 +14,14 @@
             <div class="col-md-4">
                 <div class="card shadow-lg p-4">
                     <h2 class="text-center text-danger mb-4">Sign up</h2>
-                    <form method="post">
                     
-
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username:</label>
                             <input type="text" name="username" class="form-control" required>

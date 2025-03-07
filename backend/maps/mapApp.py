@@ -50,9 +50,10 @@ def signup():
 def map():
     if "username" not in session:
         return redirect(url_for("login"))
+    currentUser = session["username"]
     m = folium.Map(location=[4.7110, -74.0721], zoom_start=12)
     map_html = m._repr_html_() 
-    return render_template("index.html", map_html=map_html)
+    return render_template("index.html", map_html=map_html, currentUser=currentUser)
 
 @app.route("/logout")
 def logout():
