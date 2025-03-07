@@ -25,7 +25,7 @@ def login():
             session["username"] = username
             return redirect(url_for("map"))
         else:
-            return "Invalid credentials. Try again."
+            return redirect(url_for("error"))
     
     return render_template("login.html")
 
@@ -57,6 +57,10 @@ def map():
 def logout():
     session.pop("username", None)
     return redirect(url_for("login"))
+
+@app.route("/error")
+def error():
+    return render_template("error.html") 
 
 if __name__ == "__main__":
     app.run(debug=True)
