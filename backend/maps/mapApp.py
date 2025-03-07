@@ -32,14 +32,13 @@ def login():
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
-        email = request.form["email"]
         username = request.form["username"]
         password = request.form["password"]
 
         if username in users:
             return "Username already exists. Choose a different one."
         
-        users[username] = {"email": email, "password": password}
+        users[username] = {"password": password}
         return redirect(url_for("login"))
     
     return render_template("signup.html")
