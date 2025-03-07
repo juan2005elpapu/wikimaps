@@ -29,7 +29,8 @@ def login():
             session["username"] = username
             return redirect(url_for("map"))
         else:
-            return render_template("login.html", error="Credenciales incorrectas.")
+            # Redirige a la página de error en caso de credenciales incorrectas
+            return redirect(url_for("error"))
     
     return render_template("login.html")
 
