@@ -49,7 +49,6 @@ def map():
     if "username" not in session:
         return redirect(url_for("login"))
     
-    # ✅ Generate Folium map
     m = folium.Map(location=[4.7110, -74.0721], zoom_start=12)
     map_html = m._repr_html_()  # Convert map to HTML
     
