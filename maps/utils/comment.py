@@ -12,31 +12,33 @@ cola_comentarios = FifoQueue()
 nodo_seleccionado = None
 usuario = get_current_user()
 
-def actualizar_interfaz():
-    limpiar_treeview()
-    current = cola_comentarios.head
-    while current:
-        current.value.mostrar()  
-        current = current.next
 
-def limpiar_treeview():
-    for vertices in tree.get_children():
-        tree.delete(vertices)
+#lugar es el nodo seleccionado en el mapa
+def mostrar_arbol(lugar):
+        lugar.mostrar()
 
-def agregar_comentario():
-    comentario = simpledialog.askstring("Nuevo Comentario", "Ingrese su comentario:")
+#se le pasa la raiz que es el nodo seleccionado en el mapa y el valor que es el comentario, si no existe esa raiz se crea el arbol
+#de lo contrario se le pone el comentario como un hijo 
+def agregar_comentario(lugar, comentario):
+    nodo_raiz = cola_comentarios.head
+    while nodo_raiz:
+        if nodo_raiz.valor == lugar:
+            break
+        nodo_raiz = nodo_raiz.hermano
+    
+    if not nodo_raiz:
+        nodo_raiz = Node(lugar,usuario)
+        cola_comentarios.enqueue(nodo_raiz)  
+
     if comentario:
-        nodo = Node(comentario, usuario)  
-        cola_comentarios.enqueue(nodo)  
-        actualizar_interfaz()
+        nuevo_comentario = Node(comentario, "Usuario")  
+        nodo_raiz.agregar_hijo(nuevo_comentario)  
 
-def seleccionar_nodo(event):
+#se le pasa el valor del comentario seleccionado y busca de quien es hijo
+def seleccionar_nodo(seleccionado):
     global nodo_seleccionado
-    seleccionado = tree.selection()
     if seleccionado:
-        if "usuario" in tree.item(seleccionado, "tags"):  
-            return
-        valor = tree.item(seleccionado, "text").strip()
+        valor = seleccionado
         current = cola_comentarios.head
         while current:
             nodo_seleccionado = current.value.buscar_nodo(valor)
@@ -46,31 +48,13 @@ def seleccionar_nodo(event):
         else:
             nodo_seleccionado = None
 
-def responder_a_nodo():
+#agrega la respuesta como un hijo del nodo seleccionado
+def responder_a_nodo(respuesta):
     global nodo_seleccionado
     if nodo_seleccionado:
-        respuesta = simpledialog.askstring("Responder", "Ingrese su respuesta:")
         if respuesta:
             respuesta_nodo = Node(respuesta, usuario) 
             nodo_seleccionado.agregar_hijo(respuesta_nodo)  
-            actualizar_interfaz()
+            "actualizar_interfaz()"
     else:
-        messagebox.showwarning("Atención", "Seleccione un comentario primero.")
-
-root = tk.Tk()
-root.title("Sistema de Comentarios")
-root.geometry("500x500")
-
-frame_botones = tk.Frame(root)
-frame_botones.pack(pady=5)
-
-tk.Button(frame_botones, text="Hacer un Comentario", command=agregar_comentario).pack(side="left", padx=5)
-tk.Button(frame_botones, text="Responder", command=responder_a_nodo).pack(side="left", padx=5)
-
-tree = ttk.Treeview(root)
-tree.pack(pady=10, padx=10, fill=tk.BOTH, expand=True)
-tree.bind("<<TreeviewSelect>>", seleccionar_nodo)
-
-tree.tag_configure("usuario", background="#e0e0e0", foreground="black")  
-actualizar_interfaz()
-root.mainloop()
+        print("Atención", "Seleccione un comentario primero.")

@@ -32,3 +32,16 @@ class TreeNode(Node):
             return self.hermano.buscar_nodo(valor_buscar)
         else:
             return None  
+    
+    def mostrar(self, nivel=0):
+        if nivel > 0:  
+            print("  " * nivel + (self.usuario if self.usuario else "Anónimo") + ": " + self.valor)
+        
+        if self.hijo:
+            self.hijo.mostrar(nivel + 1)
+    
+        if self.hermano:
+            self.hermano.mostrar(nivel)
+
+
+            
