@@ -6,8 +6,10 @@ from madehash import MadeHash
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-# Usamos MadeHash en lugar de un diccionario
 userHash = MadeHash(initialCapacity=10)
+
+def get_current_user():
+    return session.get("username")
 
 @app.route("/")
 def home():
@@ -17,7 +19,6 @@ def home():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # Si todavía no hay usuario registrado, redirige a signup
     if userHash.getTotalEntries() == 0:
         return redirect(url_for("signup"))
     
@@ -29,7 +30,6 @@ def login():
             session["username"] = username
             return redirect(url_for("map"))
         else:
-            # Redirige a la página de error en caso de credenciales incorrectas
             return redirect(url_for("error"))
     
     return render_template("login.html")
@@ -50,7 +50,7 @@ def signup():
 def map():
     if "username" not in session:
         return redirect(url_for("login"))
-    currentUser = session["username"]
+    currentUser = get_current_user()
     m = folium.Map(location=[4.7110, -74.0721], zoom_start=12)
     map_html = m._repr_html_() 
     return render_template("index.html", map_html=map_html, currentUser=currentUser)
