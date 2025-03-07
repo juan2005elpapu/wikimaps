@@ -1,3 +1,5 @@
+from fifoQueue import FifoQueue
+
 class Encrypter: 
 
     def __init__(self, password): 
@@ -7,10 +9,10 @@ class Encrypter:
         self.password = password
 
     def RSA_Encrypt(self): 
-        listOfNum=[]
+        listOfNum = FifoQueue()
         for letter in self.password: 
             letter = int.from_bytes(letter.encode(), 'big')
-            listOfNum.append(letter)
+            listOfNum.enqueue(letter)
 
         final_Password = ''
         for Nums in listOfNum: 
@@ -30,7 +32,6 @@ class Encrypter:
 
         return decrypted_message
     
-
 encriptador = Encrypter('hola')
 print(encriptador.RSA_Encrypt())
 print(encriptador.RSA_Decrypt(encriptador.RSA_Encrypt()))
