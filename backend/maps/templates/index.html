@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map App</title>
+</head>
+<body>
+    <h1>Map Application</h1>
+    <button>Añadir puntero</button>
+    <button>Borrar puntero</button>
+    <div>{{ map_html|safe }}</div>
+    <br>
+    <a href="{{ url_for('logout') }}"><button>Logout</button></a>
+</body>
+</html>
