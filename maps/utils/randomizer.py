@@ -38,6 +38,3 @@ class Randomizer:
             numero = int(self.generateStar() * 10)
             code += str(numero)
         return code
-    
-rad = Randomizer()
-print(rad.generateCode())
