@@ -5,72 +5,49 @@ from tkinter import simpledialog, messagebox, ttk
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from dataStructures.fifoQueue import FifoQueue
-from nodes.node import Node
-from mapApp import get_current_user
+from nodes.treeNode import TreeNode
 
 cola_comentarios = FifoQueue()
 nodo_seleccionado = None
-usuario = get_current_user()
 
-def actualizar_interfaz():
-    limpiar_treeview()
+def mostrar_arbol(lugar):
+    lugar.mostrar()
+
+def agregar_comentario(lugar, comentario):
+    from flask import session
+    usuario = session.get("username", "Anónimo")
+    
+    # Buscar si existe ya un árbol para este lugar
+    nodo_existente = None
     current = cola_comentarios.head
+    
     while current:
-        current.value.mostrar()  
-        current = current.next
-
-def limpiar_treeview():
-    for vertices in tree.get_children():
-        tree.delete(vertices)
-
-def agregar_comentario():
-    comentario = simpledialog.askstring("Nuevo Comentario", "Ingrese su comentario:")
-    if comentario:
-        nodo = Node(comentario, usuario)  
-        cola_comentarios.enqueue(nodo)  
-        actualizar_interfaz()
-
-def seleccionar_nodo(event):
-    global nodo_seleccionado
-    seleccionado = tree.selection()
-    if seleccionado:
-        if "usuario" in tree.item(seleccionado, "tags"):  
-            return
-        valor = tree.item(seleccionado, "text").strip()
-        current = cola_comentarios.head
-        while current:
-            nodo_seleccionado = current.value.buscar_nodo(valor)
-            if nodo_seleccionado:
+        if hasattr(current, 'value'):
+            tree_node = current.value
+            if tree_node.value == lugar:  # Asumiendo que TreeNode almacena el valor en .value
+                nodo_existente = tree_node
                 break
-            current = current.next
-        else:
-            nodo_seleccionado = None
-
-def responder_a_nodo():
-    global nodo_seleccionado
-    if nodo_seleccionado:
-        respuesta = simpledialog.askstring("Responder", "Ingrese su respuesta:")
-        if respuesta:
-            respuesta_nodo = Node(respuesta, usuario) 
-            nodo_seleccionado.agregar_hijo(respuesta_nodo)  
-            actualizar_interfaz()
+        current = current.next
+    
+    if not nodo_existente:
+        # Crear un nuevo árbol para este lugar
+        nodo_raiz = TreeNode(lugar)  # El nodo raíz solo almacena el lugar
+        cola_comentarios.enqueue(nodo_raiz)
+        
+        # Crear un nodo hijo con el comentario y el usuario
+        nodo_comentario = TreeNode(comentario)
+        nodo_comentario.usuario = usuario
+        
+        # Agregar el comentario como hijo del lugar
+        nodo_raiz.agregar_hijo(nodo_comentario)
     else:
-        messagebox.showwarning("Atención", "Seleccione un comentario primero.")
+        # Agregar el comentario como hijo del lugar existente
+        nodo_comentario = TreeNode(comentario)
+        nodo_comentario.usuario = usuario
+        nodo_existente.agregar_hijo(nodo_comentario)
 
-root = tk.Tk()
-root.title("Sistema de Comentarios")
-root.geometry("500x500")
+def seleccionar_nodo(seleccionado):
+    pass
 
-frame_botones = tk.Frame(root)
-frame_botones.pack(pady=5)
-
-tk.Button(frame_botones, text="Hacer un Comentario", command=agregar_comentario).pack(side="left", padx=5)
-tk.Button(frame_botones, text="Responder", command=responder_a_nodo).pack(side="left", padx=5)
-
-tree = ttk.Treeview(root)
-tree.pack(pady=10, padx=10, fill=tk.BOTH, expand=True)
-tree.bind("<<TreeviewSelect>>", seleccionar_nodo)
-
-tree.tag_configure("usuario", background="#e0e0e0", foreground="black")  
-actualizar_interfaz()
-root.mainloop()
+def responder_a_nodo(respuesta):
+    pass

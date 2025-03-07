@@ -11,7 +11,7 @@
 <body class="bg-light">
     <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Map Application</a>
+            <a class="navbar-brand" href="#">Wikimaps</a>
             <div>
                 <span class="text-light me-3">User: {{ currentUser }}</span>
                 <a href="{{ url_for('logout') }}" class="btn btn-warning">Logout</a>
@@ -25,6 +25,7 @@
             <button id="addPath" class="btn btn-primary">Añadir camino</button>
             <button id="deletePath" class="btn btn-danger">Borrar camino</button>
             <button id="deletePointer" class="btn btn-warning">Borrar puntero</button>
+            <a href="{{ url_for('comments') }}" class="btn btn-info">Agregar comentarios</a>
         </div>
 
         <div class="card shadow-lg p-3">

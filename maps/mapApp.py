@@ -6,6 +6,7 @@ import folium
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from utils.randomizer import Randomizer
 from dataStructures.madeHash import MadeHash  
+from utils.comment import agregar_comentario, cola_comentarios
 from utils.graph import Graph
 
 app = Flask(__name__)
@@ -151,6 +152,62 @@ def logout():
 @app.route("/error")
 def error():
     return render_template("error.html") 
+
+# Nuevo endpoint para agregar comentarios
+@app.route("/comments", methods=["GET", "POST"])
+def comments():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    currentUser = get_current_user()
+    
+    if request.method == "POST":
+        lugar = request.form.get("lugar", "default").strip() or "default"
+        comentario = request.form.get("comentario")
+        if comentario:
+            agregar_comentario(lugar, comentario)
+        return redirect(url_for("comments"))
+    
+    def render_node(node, is_root=False):
+        # Obtener el nodo real si está encapsulado
+        tree_node = node.value if hasattr(node, 'value') else node
+        
+        # Determinar el valor a mostrar
+        if hasattr(tree_node, 'value'):
+            valor = tree_node.value
+        else:
+            valor = "Sin valor"
+        
+        # Si es un nodo raíz (lugar), mostrarlo diferente
+        if is_root:
+            html = f"<li><strong>Lugar: {valor}</strong><ul>"
+            # Procesar hijos (comentarios)
+            if hasattr(tree_node, 'hijo') and tree_node.hijo:
+                current_child = tree_node.hijo
+                while current_child:
+                    # Obtener el usuario del comentario
+                    usuario = current_child.usuario if hasattr(current_child, 'usuario') and current_child.usuario else "Anónimo"
+                    # Obtener el valor del comentario
+                    comment_value = current_child.value if hasattr(current_child, 'value') else "Sin comentario"
+                    html += f"<li><em>{usuario}</em>: {comment_value}</li>"
+                    # Pasar al siguiente hermano (siguiente comentario)
+                    current_child = current_child.hermano
+            html += "</ul></li>"
+        else:
+            # Si no es raíz, debería ser un comentario directo (caso que no deberíamos alcanzar con la implementación actual)
+            usuario = tree_node.usuario if hasattr(tree_node, 'usuario') and tree_node.usuario else "Anónimo"
+            html = f"<li><em>{usuario}</em>: {valor}</li>"
+        
+        return html
+    
+    comments_html = "<ul class='list-group'>"
+    current = cola_comentarios.head
+    while current:
+        comments_html += render_node(current, is_root=True)
+        current = current.next
+    comments_html += "</ul>"
+    
+    return render_template("comments.html", currentUser=currentUser, comments_html=comments_html)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

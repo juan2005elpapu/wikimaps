@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comentarios - Wikimaps</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        ul { 
+            list-style-type: none; 
+            padding-left: 15px;
+        }
+        li { 
+            margin: 10px 0;
+            padding: 5px;
+        }
+        .comment-area {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        em {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar bg-dark" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Wikimaps</a>
+            <div>
+                <span class="text-light me-3">User: {{ currentUser }}</span>
+                <a href="{{ url_for('logout') }}" class="btn btn-warning">Logout</a>
+                <a href="{{ url_for('map') }}" class="btn btn-secondary ms-2">Volver al Mapa</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <div class="card shadow-lg p-4 mb-4">
+            <h3>Agregar Comentario</h3>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="lugar" class="form-label">Lugar:</label>
+                    <input type="text" name="lugar" class="form-control" value="default" placeholder="Especifica el lugar o deja en 'default'">
+                </div>
+                <div class="mb-3">
+                    <label for="comentario" class="form-label">Comentario:</label>
+                    <textarea name="comentario" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Agregar Comentario</button>
+            </form>
+        </div>
+        
+        <div class="card shadow-lg p-3">
+            <h4>Árbol de Comentarios</h4>
+            <div class="comment-area">
+                {{ comments_html|safe }}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
